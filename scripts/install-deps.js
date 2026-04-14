@@ -25,8 +25,12 @@ function ensureBinDir() {
 
 function ensureYtDlp() {
   ensureBinDir();
-  const localYtDlp = path.join(process.cwd(), "bin", process.platform === "win32" ? "yt-dlp.exe" : "yt-dlp");
-  if (fs.existsSync(localYtDlp)) {
+  const localCandidates = [
+    path.join(process.cwd(), "bin", process.platform === "win32" ? "yt-dlp.exe" : "yt-dlp"),
+    path.join(process.cwd(), "bin", "yt-dlp-linux-x64"),
+    path.join(process.cwd(), "bin", "yt-dlp-linux-arm64")
+  ];
+  if (localCandidates.some((candidate) => fs.existsSync(candidate))) {
     console.log("[install-deps] yt-dlp found in bin/");
     return;
   }

@@ -11,6 +11,26 @@ function resolveAsset() {
   throw new Error(`Unsupported platform for yt-dlp install: ${process.platform}`);
 }
 
+function resolveDownloads() {
+  if (process.platform === "linux") {
+    // Build and runtime architectures can differ on serverless providers.
+    return [
+      { asset: "yt-dlp_linux", output: "yt-dlp-linux-x64" },
+      { asset: "yt-dlp_linux_aarch64", output: "yt-dlp-linux-arm64" }
+    ];
+  }
+
+  if (process.platform === "darwin") {
+    return [{ asset: "yt-dlp_macos", output: "yt-dlp" }];
+  }
+
+  if (process.platform === "win32") {
+    return [{ asset: "yt-dlp.exe", output: "yt-dlp.exe" }];
+  }
+
+  throw new Error(`Unsupported platform for yt-dlp install: ${process.platform}`);
+}
+
 function download(url, destination) {
   return new Promise((resolve, reject) => {
     const request = https.get(url, (response) => {
@@ -40,21 +60,29 @@ function download(url, destination) {
 
 async function main() {
   const binDir = path.join(process.cwd(), "bin");
-  const binaryPath = path.join(binDir, process.platform === "win32" ? "yt-dlp.exe" : "yt-dlp");
 
   fs.mkdirSync(binDir, { recursive: true });
 
-  const assetName = resolveAsset();
-  const downloadUrl = `https://github.com/yt-dlp/yt-dlp/releases/latest/download/${assetName}`;
-
-  console.log(`[install-ytdlp] Downloading ${downloadUrl}`);
-  await download(downloadUrl, binaryPath);
-
-  if (process.platform !== "win32") {
-    fs.chmodSync(binaryPath, 0o755);
+  const downloads = resolveDownloads();
+  for (const item of downloads) {
+    const targetPath = path.join(binDir, item.output);
+    const downloadUrl = `https://github.com/yt-dlp/yt-dlp/releases/latest/download/${item.asset}`;
+    console.log(`[install-ytdlp] Downloading ${downloadUrl}`);
+    await download(downloadUrl, targetPath);
+    if (process.platform !== "win32") {
+      fs.chmodSync(targetPath, 0o755);
+    }
+    console.log(`[install-ytdlp] Ready: ${targetPath}`);
   }
 
-  console.log(`[install-ytdlp] yt-dlp ready at ${binaryPath}`);
+  // Keep a default name for non-Linux local workflows.
+  if (process.platform !== "linux") {
+    const fallbackPath = path.join(binDir, process.platform === "win32" ? "yt-dlp.exe" : "yt-dlp");
+    if (!fs.existsSync(fallbackPath)) {
+      const source = path.join(binDir, downloads[0].output);
+      fs.copyFileSync(source, fallbackPath);
+    }
+  }
 }
 
 main().catch((error) => {

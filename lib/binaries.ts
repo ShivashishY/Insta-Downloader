@@ -18,8 +18,18 @@ export function resolveYtDlpCommand(): string {
   const configuredPath = config.YTDLP_BINARY_PATH.trim();
   if (configuredPath) return configuredPath;
 
+  if (process.platform === "linux") {
+    const linuxBinary = process.arch === "arm64"
+      ? join(process.cwd(), "bin", "yt-dlp-linux-arm64")
+      : join(process.cwd(), "bin", "yt-dlp-linux-x64");
+    if (existsSync(linuxBinary)) return linuxBinary;
+  }
+
   const bundledPath = join(process.cwd(), "bin", "yt-dlp");
   if (existsSync(bundledPath)) return bundledPath;
+
+  const bundledWinPath = join(process.cwd(), "bin", "yt-dlp.exe");
+  if (existsSync(bundledWinPath)) return bundledWinPath;
 
   return "yt-dlp";
 }
