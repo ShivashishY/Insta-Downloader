@@ -44,7 +44,15 @@ export default function DownloadInput({
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ url })
       });
-      const payload = await response.json();
+
+      const raw = await response.text();
+      let payload: { success?: boolean; error?: string } & DownloadResult;
+      try {
+        payload = JSON.parse(raw);
+      } catch {
+        throw new Error(`Server returned an invalid response (${response.status}).`);
+      }
+
       if (!response.ok || !payload.success) {
         throw new Error(payload.error || "Unable to download this URL.");
       }
