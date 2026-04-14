@@ -5,8 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "vercel-build": "next build",
-    "postinstall": "pip3 install yt-dlp || python3 -m pip install yt-dlp || true",
+    "vercel-build": "node scripts/install-ytdlp.js && next build",
+    "postinstall": "node scripts/install-ytdlp.js",
     "postbuild": "next-sitemap",
     "start": "next start",
     "lint": "eslint ."

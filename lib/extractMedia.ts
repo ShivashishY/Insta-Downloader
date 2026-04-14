@@ -1,5 +1,6 @@
 import axios from "axios";
 import { execFile } from "node:child_process";
+import { delimiter, join } from "node:path";
 import { promisify } from "node:util";
 import ffmpegPath from "ffmpeg-static";
 import { config } from "@/lib/config";
@@ -7,6 +8,7 @@ import { detectContentType } from "@/lib/detectPlatform";
 import { DownloadItem, DownloadResult, SupportedPlatform } from "@/lib/types";
 
 const execFileAsync = promisify(execFile);
+const runtimePath = `${join(process.cwd(), "bin")}${delimiter}${process.env.PATH || ""}`;
 
 type JsonObject = Record<string, unknown>;
 
@@ -460,6 +462,7 @@ async function runYtDlpJson(url: string, extraArgs: string[] = []): Promise<YtDl
     url
   ];
   const { stdout } = await execFileAsync("yt-dlp", args, {
+    env: { ...process.env, PATH: runtimePath },
     maxBuffer: 20 * 1024 * 1024
   });
   return JSON.parse(stdout) as YtDlpResponse;

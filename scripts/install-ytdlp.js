@@ -75,6 +75,20 @@ async function main() {
     console.log(`[install-ytdlp] Ready: ${targetPath}`);
   }
 
+  if (process.platform === "linux") {
+    const launcherPath = path.join(binDir, "yt-dlp");
+    const launcher = `#!/usr/bin/env sh
+ARCH="$(uname -m)"
+if [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "arm64" ]; then
+  exec "$(dirname "$0")/yt-dlp-linux-arm64" "$@"
+fi
+exec "$(dirname "$0")/yt-dlp-linux-x64" "$@"
+`;
+    fs.writeFileSync(launcherPath, launcher, { mode: 0o755 });
+    fs.chmodSync(launcherPath, 0o755);
+    console.log(`[install-ytdlp] Ready launcher: ${launcherPath}`);
+  }
+
   // Keep a default name for non-Linux local workflows.
   if (process.platform !== "linux") {
     const fallbackPath = path.join(binDir, process.platform === "win32" ? "yt-dlp.exe" : "yt-dlp");
