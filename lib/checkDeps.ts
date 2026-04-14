@@ -10,17 +10,19 @@ export function checkDependencies() {
       execFileSync(ffmpegCommand, ["-version"], { stdio: "ignore" });
     }
     console.log("[deps] ffmpeg: OK");
-  } catch {
+  } catch (error) {
     console.error("[deps] ffmpeg NOT FOUND - audio merging will fail. Install ffmpeg.");
-    process.exit(1);
+    const detail = error instanceof Error ? ` (${error.message})` : "";
+    throw new Error(`ffmpeg dependency check failed${detail}`);
   }
 
   try {
     const ytDlpCommand = resolveYtDlpCommand();
     execFileSync(ytDlpCommand, ["--version"], { stdio: "ignore" });
     console.log("[deps] yt-dlp: OK");
-  } catch {
+  } catch (error) {
     console.error("[deps] yt-dlp NOT FOUND");
-    process.exit(1);
+    const detail = error instanceof Error ? ` (${error.message})` : "";
+    throw new Error(`yt-dlp dependency check failed${detail}`);
   }
 }

@@ -10,25 +10,25 @@ export const runtime = "nodejs";
 let depsChecked = false;
 
 export async function POST(request: NextRequest) {
-  if (!depsChecked) {
-    checkDependencies();
-    depsChecked = true;
-  }
-
-  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "127.0.0.1";
-  const limiter = await checkRateLimit(ip);
-
-  if (!limiter.success) {
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Too many requests. Please wait a moment and try again."
-      },
-      { status: 429 }
-    );
-  }
-
   try {
+    if (!depsChecked) {
+      checkDependencies();
+      depsChecked = true;
+    }
+
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "127.0.0.1";
+    const limiter = await checkRateLimit(ip);
+
+    if (!limiter.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Too many requests. Please wait a moment and try again."
+        },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const url = String(body?.url || "").trim();
 
