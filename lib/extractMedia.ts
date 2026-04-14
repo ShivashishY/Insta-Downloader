@@ -1,5 +1,7 @@
 import axios from "axios";
 import { execFile } from "node:child_process";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { promisify } from "node:util";
 import { config } from "@/lib/config";
 import { detectContentType } from "@/lib/detectPlatform";
@@ -440,8 +442,11 @@ function isAuthRestrictedError(message: string): boolean {
 }
 
 async function runYtDlpJson(url: string, extraArgs: string[] = []): Promise<YtDlpResponse> {
+  const configuredPath = config.YTDLP_BINARY_PATH.trim();
+  const bundledPath = join(process.cwd(), "bin", "yt-dlp");
+  const ytDlpCommand = configuredPath || (existsSync(bundledPath) ? bundledPath : "yt-dlp");
   const args = ["-J", "--no-warnings", ...extraArgs, url];
-  const { stdout } = await execFileAsync("yt-dlp", args, {
+  const { stdout } = await execFileAsync(ytDlpCommand, args, {
     maxBuffer: 20 * 1024 * 1024
   });
   return JSON.parse(stdout) as YtDlpResponse;
@@ -580,7 +585,7 @@ async function extractWithYtDlp(url: string, platform: SupportedPlatform): Promi
     }
 
     if (message.includes("ENOENT")) {
-      throw new Error("yt-dlp is not installed on the server. Install yt-dlp before using local extraction.");
+      throw new Error("yt-dlp is not installed on the server. Ensure deploy-time installer runs or set YTDLP_BINARY_PATH.");
     }
     throw new Error("Unable to resolve media. The content may be private or temporarily unavailable.");
   }

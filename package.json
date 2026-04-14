@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "vercel-build": "node scripts/install-ytdlp.js && npm run build",
     "postbuild": "next-sitemap",
     "start": "next start",
     "lint": "eslint ."

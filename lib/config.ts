@@ -1,6 +1,7 @@
 export const config = {
   USE_COBALT: process.env.USE_COBALT === "true",
   COBALT_API_URL: process.env.COBALT_API_URL || "",
+  YTDLP_BINARY_PATH: process.env.YTDLP_BINARY_PATH || "",
   USE_RAPID_API: process.env.USE_RAPID_API === "true",
   RAPID_API_KEY: process.env.RAPID_API_KEY || "",
   RAPID_API_HOST: process.env.RAPID_API_HOST || "",

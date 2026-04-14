@@ -6,6 +6,11 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 const nextConfig = {
   images: {
     remotePatterns: [{ protocol: "https", hostname: "**" }]
+  },
+  experimental: {
+    outputFileTracingIncludes: {
+      "/api/download": ["./bin/**"]
+    }
   }
 };
 
