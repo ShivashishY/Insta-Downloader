@@ -41,6 +41,9 @@ export const metadata: Metadata = {
     description:
       "Download Instagram videos, Reels, photos, stories, IGTV and carousel posts. Free, no login, no watermark.",
     images: ["/file.svg"]
+  },
+  verification: {
+    google: "YC-wW2oy1_iuCKdU6xJZpwx-HOFUfHEvMWEQva_nns0"
   }
 };
 
