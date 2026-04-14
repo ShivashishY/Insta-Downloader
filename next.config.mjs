@@ -9,7 +9,7 @@ const nextConfig = {
   },
   experimental: {
     outputFileTracingIncludes: {
-      "/api/download": ["./bin/**"]
+      "/*": ["./bin/**", "./node_modules/ffmpeg-static/**"]
     }
   }
 };

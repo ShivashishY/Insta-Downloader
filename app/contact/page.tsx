@@ -22,7 +22,7 @@ export default function ContactPage() {
       `Name: ${name}\nEmail: ${email}\nInfringing URL: ${infringingUrl}\n\nDetails:\n${details}\n\nGood Faith Statement:\n${statement}\n\nElectronic Signature:\n${signature}`
     );
 
-    window.location.href = `mailto:dmca@instafastdl.com?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:dmca@savemyreel.xyz?subject=${subject}&body=${body}`;
     setStatus("Your email client was opened with a prefilled DMCA request.");
     form.reset();
   };
@@ -31,7 +31,7 @@ export default function ContactPage() {
     <section className="container py-10">
       <h1 className="mb-4 text-3xl font-extrabold">Contact</h1>
       <p className="mb-6 text-slate-600">
-        General support: <a className="text-indigo-700 underline" href="mailto:contact@instafastdl.com">contact@instafastdl.com</a>
+        General support: <a className="text-indigo-700 underline" href="mailto:contact@savemyreel.xyz">contact@savemyreel.xyz</a>
       </p>
 
       <article className="card p-6">

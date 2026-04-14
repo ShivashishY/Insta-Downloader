@@ -1,9 +1,17 @@
 import axios from "axios";
+import { execFile } from "node:child_process";
+import { promises as fs } from "node:fs";
+import { tmpdir } from "node:os";
+import { dirname, join } from "node:path";
+import { promisify } from "node:util";
 import { Readable } from "node:stream";
 import { NextRequest, NextResponse } from "next/server";
 import { config } from "@/lib/config";
+import { resolveFfmpegCommand, resolveYtDlpCommand } from "@/lib/binaries";
 
 export const runtime = "nodejs";
+
+const execFileAsync = promisify(execFile);
 
 function isAllowedHost(rawUrl: string) {
   try {
@@ -16,6 +24,7 @@ function isAllowedHost(rawUrl: string) {
 
 export async function GET(request: NextRequest) {
   const mediaUrl = request.nextUrl.searchParams.get("url");
+  const sourceUrl = request.nextUrl.searchParams.get("sourceUrl");
   const requestedName = request.nextUrl.searchParams.get("filename") || "download.bin";
   const requestedExt = (request.nextUrl.searchParams.get("ext") || "").toLowerCase();
 
@@ -24,6 +33,45 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    if (sourceUrl) {
+      const outputDir = join(tmpdir(), "savemyreel");
+      await fs.mkdir(outputDir, { recursive: true });
+
+      const outputPath = join(outputDir, `merged-${Date.now()}-${Math.random().toString(36).slice(2)}.mp4`);
+      const cookieArgs: string[] = [];
+      if (config.YTDLP_COOKIES_FILE) {
+        cookieArgs.push("--cookies", config.YTDLP_COOKIES_FILE);
+      } else if (config.YTDLP_COOKIES_FROM_BROWSER) {
+        cookieArgs.push("--cookies-from-browser", config.YTDLP_COOKIES_FROM_BROWSER);
+      }
+
+      const args = [
+        "-f",
+        "bestvideo+bestaudio/best",
+        "--merge-output-format",
+        "mp4",
+        "--ffmpeg-location",
+        dirname(resolveFfmpegCommand()),
+        "--no-playlist",
+        "-o",
+        outputPath,
+        ...cookieArgs,
+        sourceUrl
+      ];
+
+      await execFileAsync(resolveYtDlpCommand(), args, { maxBuffer: 10 * 1024 * 1024 });
+
+      const data = await fs.readFile(outputPath);
+      await fs.unlink(outputPath).catch(() => undefined);
+
+      const headers = new Headers();
+      headers.set("content-type", "video/mp4");
+      headers.set("cache-control", "no-store");
+      headers.set("content-disposition", `attachment; filename="${requestedName.endsWith(".mp4") ? requestedName : "video.mp4"}"`);
+
+      return new NextResponse(data, { headers });
+    }
+
     const upstream = await axios.get(mediaUrl, {
       responseType: "stream",
       timeout: 25_000,

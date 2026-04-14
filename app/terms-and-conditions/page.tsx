@@ -14,7 +14,7 @@ export default function TermsAndConditionsPage() {
         <section>
           <h2 className="text-xl font-bold">1. Acceptance of Terms</h2>
           <p>
-            By using InstaFastDL, you agree to these terms. If you do not agree, do not use the service.
+            By using SaveMy Reel, you agree to these terms. If you do not agree, do not use the service.
           </p>
         </section>
 
@@ -62,7 +62,7 @@ export default function TermsAndConditionsPage() {
           <h2 className="text-xl font-bold">7. DMCA Takedown</h2>
           <p>
             Copyright owners may submit DMCA takedown requests by emailing
-            <a className="ml-1 text-indigo-700 underline" href="mailto:dmca@instafastdl.com">dmca@instafastdl.com</a>.
+            <a className="ml-1 text-indigo-700 underline" href="mailto:dmca@savemyreel.xyz">dmca@savemyreel.xyz</a>.
             Include ownership evidence, the relevant URL, and your legal declaration.
           </p>
         </section>

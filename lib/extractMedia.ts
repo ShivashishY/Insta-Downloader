@@ -1,8 +1,7 @@
 import axios from "axios";
 import { execFile } from "node:child_process";
-import { existsSync } from "node:fs";
-import { join } from "node:path";
 import { promisify } from "node:util";
+import { resolveYtDlpCommand } from "@/lib/binaries";
 import { config } from "@/lib/config";
 import { detectContentType } from "@/lib/detectPlatform";
 import { DownloadItem, DownloadResult, SupportedPlatform } from "@/lib/types";
@@ -14,6 +13,7 @@ type JsonObject = Record<string, unknown>;
 interface YtDlpFormat {
   url?: string;
   vcodec?: string;
+  acodec?: string;
   ext?: string;
   height?: number;
   format_note?: string;
@@ -87,9 +87,13 @@ function qualityFromWidth(width?: number): string {
 }
 
 function toVideoItemsFromFormats(formats: YtDlpFormat[]): DownloadItem[] {
-  const filtered = formats
+  const withVideo = formats
     .filter((f) => f.url && f.vcodec !== "none")
     .sort((a, b) => (b.height || 0) - (a.height || 0));
+
+  // Prefer progressive streams that already contain audio.
+  const progressive = withVideo.filter((f) => f.acodec && f.acodec !== "none");
+  const filtered = progressive.length > 0 ? progressive : withVideo;
 
   const uniq = new Map<string, DownloadItem>();
   for (const format of filtered) {
@@ -442,10 +446,19 @@ function isAuthRestrictedError(message: string): boolean {
 }
 
 async function runYtDlpJson(url: string, extraArgs: string[] = []): Promise<YtDlpResponse> {
-  const configuredPath = config.YTDLP_BINARY_PATH.trim();
-  const bundledPath = join(process.cwd(), "bin", "yt-dlp");
-  const ytDlpCommand = configuredPath || (existsSync(bundledPath) ? bundledPath : "yt-dlp");
-  const args = ["-J", "--no-warnings", ...extraArgs, url];
+  const ytDlpCommand = resolveYtDlpCommand();
+  const args = [
+    "--dump-json",
+    "--no-playlist",
+    "-f",
+    "bestvideo+bestaudio/best",
+    "--merge-output-format",
+    "mp4",
+    "--audio-multistreams",
+    "--no-warnings",
+    ...extraArgs,
+    url
+  ];
   const { stdout } = await execFileAsync(ytDlpCommand, args, {
     maxBuffer: 20 * 1024 * 1024
   });

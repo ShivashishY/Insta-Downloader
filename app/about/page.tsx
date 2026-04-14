@@ -7,10 +7,10 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <section className="container py-10">
-      <h1 className="mb-4 text-3xl font-extrabold">About InstaFastDL</h1>
+      <h1 className="mb-4 text-3xl font-extrabold">About SaveMy Reel</h1>
       <div className="space-y-5 text-slate-700 leading-7">
         <p>
-          InstaFastDL is a web-based downloader for public social media links, focused on Instagram formats such as
+          SaveMy Reel is a web-based downloader for public social media links, focused on Instagram formats such as
           videos, reels, photos, stories, IGTV, and carousel posts. The goal is to provide a fast and clean workflow so
           users can save media for lawful personal use without installing an app.
         </p>
@@ -20,10 +20,10 @@ export default function AboutPage() {
           this service as a content ownership transfer tool.
         </p>
         <p>
-          InstaFastDL is operated by an independent web tools team focused on practical utility products and responsible
+          SaveMy Reel is operated by an independent web tools team focused on practical utility products and responsible
           content handling. If you need legal or copyright assistance, or want to submit a takedown request, contact us
-          at <a className="text-indigo-700 underline" href="mailto:contact@instafastdl.com">contact@instafastdl.com</a> or
-          <a className="ml-1 text-indigo-700 underline" href="mailto:dmca@instafastdl.com">dmca@instafastdl.com</a>.
+          at <a className="text-indigo-700 underline" href="mailto:contact@savemyreel.xyz">contact@savemyreel.xyz</a> or
+          <a className="ml-1 text-indigo-700 underline" href="mailto:dmca@savemyreel.xyz">dmca@savemyreel.xyz</a>.
         </p>
       </div>
     </section>

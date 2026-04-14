@@ -1,4 +1,4 @@
-# InstaFastDL - Social Media Downloader (Next.js 14)
+# SaveMy Reel - Social Media Downloader (Next.js 14)
 
 SEO-focused multi-platform downloader for public social media media links (Instagram, TikTok, Twitter/X, Pinterest, YouTube Shorts).
 
@@ -22,7 +22,13 @@ SEO-focused multi-platform downloader for public social media media links (Insta
 3. Install yt-dlp on machine/server:
    - macOS: brew install yt-dlp
    - Ubuntu: sudo apt-get install yt-dlp
-4. Start dev server:
+4. Install ffmpeg (required for merging separate video/audio streams):
+   - macOS: brew install ffmpeg
+   - Ubuntu: sudo apt-get install -y ffmpeg
+5. Verify dependencies:
+   - ffmpeg -version
+   - yt-dlp --version
+6. Start dev server:
    npm run dev
 
 ## API routes
@@ -42,6 +48,38 @@ Set `USE_RAPID_API=true` and configure:
 - `RAPID_API_HOST`
 
 RapidAPI logic is in `lib/extractMedia.ts` (`extractWithRapidApi`). Replace endpoint path based on your provider.
+
+## Docker deployment (recommended for production)
+
+To avoid missing ffmpeg/yt-dlp in production, use the included `Dockerfile`.
+
+It pre-installs:
+
+- ffmpeg
+- yt-dlp
+- instaloader
+
+Build and run example:
+
+```bash
+docker build -t savemyreel .
+docker run -p 3000:3000 --env-file .env.local savemyreel
+```
+
+Set `DOCKERFILE=true` in env to mark Docker-based deployment in your config management.
+
+## Vercel deployment
+
+This project is configured to work on Vercel serverless functions:
+
+- `vercel-build` runs `scripts/install-ytdlp.js` so yt-dlp is downloaded on each deploy.
+- `ffmpeg-static` is bundled from npm so ffmpeg is available without apt/apk.
+- Output tracing includes both `bin/**` and `node_modules/ffmpeg-static/**` for `/api/download` and `/api/proxy`.
+
+Optional environment overrides:
+
+- `YTDLP_BINARY_PATH` (absolute path to yt-dlp binary)
+- `FFMPEG_BINARY_PATH` (absolute path to ffmpeg binary)
 
 ## Download restricted Instagram stories (cookie auth)
 

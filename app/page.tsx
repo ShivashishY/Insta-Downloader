@@ -10,7 +10,7 @@ import { config } from "@/lib/config";
 const ClientOnlyAdSlot = dynamic(() => import("@/components/AdSlot"), { ssr: false });
 
 const faqItems = [
-  { question: "What is InstaFastDL?", answer: "A free web tool to download public social media content without login." },
+  { question: "What is SaveMy Reel?", answer: "A free web tool to download public social media content without login." },
   { question: "Is downloading from Instagram legal?", answer: "Use downloads for personal purposes and respect copyright laws in your region." },
   { question: "What formats and quality are available?", answer: "Typically MP4 for video and JPG for photos, with multiple quality options when available." },
   { question: "Do I need to log in or create an account?", answer: "No. The tool works without login." },

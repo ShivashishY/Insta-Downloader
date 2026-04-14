@@ -45,7 +45,7 @@ export default function SeoSchemas({
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "InstaFastDL",
+    name: "SaveMy Reel",
     url: pageUrl,
     potentialAction: {
       "@type": "SearchAction",

@@ -14,7 +14,7 @@ export default function PrivacyPolicyPage() {
         <section>
           <h2 className="text-xl font-bold">1. What This Tool Does</h2>
           <p>
-            InstaFastDL provides a web interface that helps users request downloads of publicly accessible media URLs.
+            SaveMy Reel provides a web interface that helps users request downloads of publicly accessible media URLs.
             Media is fetched on demand from the source platform and returned to the user for immediate download.
           </p>
         </section>
@@ -56,7 +56,7 @@ export default function PrivacyPolicyPage() {
           <h2 className="text-xl font-bold">6. DMCA and Copyright Complaints</h2>
           <p>
             If you are a copyright owner and believe content access through this tool violates your rights, send a
-            takedown request to <a className="text-indigo-700 underline" href="mailto:dmca@instafastdl.com">dmca@instafastdl.com</a>.
+            takedown request to <a className="text-indigo-700 underline" href="mailto:dmca@savemyreel.xyz">dmca@savemyreel.xyz</a>.
             Include your contact details, the infringing URL, proof of ownership, and a good-faith statement.
           </p>
         </section>

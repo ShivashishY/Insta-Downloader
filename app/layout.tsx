@@ -10,21 +10,32 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL(config.SITE_URL),
   title: {
-    default: "Instagram Downloader - Fast & Free",
-    template: "%s | InstaFastDL"
+    default: "SaveMy Reel - Instagram Downloader",
+    template: "%s | SaveMy Reel"
   },
   description:
     "Download Instagram videos, Reels, photos, stories, IGTV and carousel posts. Free, no login, no watermark.",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1
+    }
+  },
   alternates: {
     canonical: "/"
   },
   openGraph: {
-    title: "Instagram Downloader - Fast & Free",
+    title: "SaveMy Reel - Instagram Downloader",
     description:
       "Paste public social media URLs and download in HD quality instantly. No app install, no login.",
     url: config.SITE_URL,
-    siteName: "InstaFastDL",
-    images: [{ url: "/next.svg", width: 1200, height: 630, alt: "InstaFastDL" }],
+    siteName: "SaveMy Reel",
+    images: [{ url: "/next.svg", width: 1200, height: 630, alt: "SaveMy Reel" }],
     type: "website"
   }
 };

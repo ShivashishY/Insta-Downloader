@@ -1,12 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit } from "@/lib/rateLimiter";
+import { checkDependencies } from "@/lib/checkDeps";
 import { detectPlatform, isValidPublicUrl } from "@/lib/detectPlatform";
 import { extractMedia } from "@/lib/extractMedia";
 import { config } from "@/lib/config";
 
 export const runtime = "nodejs";
 
+let depsChecked = false;
+
 export async function POST(request: NextRequest) {
+  if (!depsChecked) {
+    checkDependencies();
+    depsChecked = true;
+  }
+
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "127.0.0.1";
   const limiter = await checkRateLimit(ip);
 
@@ -47,7 +55,7 @@ export async function POST(request: NextRequest) {
       ? result.items
       : result.items.map((item) => ({
           ...item,
-          url: `/api/proxy?url=${encodeURIComponent(item.url)}&filename=${encodeURIComponent(item.fileName || `video.${item.ext}`)}`
+          url: `/api/proxy?url=${encodeURIComponent(item.url)}&sourceUrl=${encodeURIComponent(url)}&filename=${encodeURIComponent(item.fileName || `video.${item.ext}`)}&ext=${encodeURIComponent(item.ext || "mp4")}`
         }));
 
     return NextResponse.json({

@@ -5,7 +5,7 @@ export default function Footer() {
     <footer className="mt-14 border-t border-slate-200 bg-white">
       <div className="container grid gap-8 py-10 md:grid-cols-4">
         <div>
-          <h3 className="text-lg font-bold text-indigo-700">InstaFastDL</h3>
+          <h3 className="text-lg font-bold text-indigo-700">SaveMy Reel</h3>
           <p className="mt-2 text-sm text-slate-600">Fast social media downloader for public content.</p>
         </div>
         <div>
@@ -46,7 +46,7 @@ export default function Footer() {
         </p>
       </div>
       <div className="border-t border-slate-100 py-4 text-center text-xs text-slate-500">
-        Copyright © {new Date().getFullYear()} InstaFastDL. All rights reserved.
+        Copyright © {new Date().getFullYear()} SaveMy Reel. All rights reserved.
       </div>
     </footer>
   );
