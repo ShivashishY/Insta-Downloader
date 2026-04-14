@@ -1,7 +1,16 @@
 import type { Metadata } from "next";
+import { config } from "@/lib/config";
 
 export const metadata: Metadata = {
-  title: "About"
+  title: "About",
+  description: "Learn about SaveMy Reel, how it works, and how to contact support and DMCA.",
+  alternates: { canonical: "/about" },
+  openGraph: {
+    title: "About SaveMy Reel",
+    description: "About SaveMy Reel and responsible personal-use media downloading.",
+    url: `${config.SITE_URL}/about`,
+    images: ["/file.svg"]
+  }
 };
 
 export default function AboutPage() {

@@ -1,7 +1,16 @@
 import type { Metadata } from "next";
+import { config } from "@/lib/config";
 
 export const metadata: Metadata = {
-  title: "Terms and Conditions"
+  title: "Terms and Conditions",
+  description: "Review SaveMy Reel terms, acceptable use, liability limits, and copyright notice.",
+  alternates: { canonical: "/terms-and-conditions" },
+  openGraph: {
+    title: "SaveMy Reel Terms and Conditions",
+    description: "Terms and conditions for using SaveMy Reel.",
+    url: `${config.SITE_URL}/terms-and-conditions`,
+    images: ["/file.svg"]
+  }
 };
 
 export default function TermsAndConditionsPage() {

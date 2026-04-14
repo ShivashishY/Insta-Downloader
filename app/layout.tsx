@@ -26,17 +26,21 @@ export const metadata: Metadata = {
       "max-video-preview": -1
     }
   },
-  alternates: {
-    canonical: "/"
-  },
   openGraph: {
     title: "SaveMy Reel - Instagram Downloader",
     description:
       "Paste public social media URLs and download in HD quality instantly. No app install, no login.",
     url: config.SITE_URL,
     siteName: "SaveMy Reel",
-    images: [{ url: "/next.svg", width: 1200, height: 630, alt: "SaveMy Reel" }],
+    images: [{ url: "/file.svg", width: 1200, height: 630, alt: "SaveMy Reel" }],
     type: "website"
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SaveMy Reel - Instagram Downloader",
+    description:
+      "Download Instagram videos, Reels, photos, stories, IGTV and carousel posts. Free, no login, no watermark.",
+    images: ["/file.svg"]
   }
 };
 

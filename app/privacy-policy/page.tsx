@@ -1,7 +1,16 @@
 import type { Metadata } from "next";
+import { config } from "@/lib/config";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy"
+  title: "Privacy Policy",
+  description: "Read SaveMy Reel privacy policy, data handling practices, and DMCA process.",
+  alternates: { canonical: "/privacy-policy" },
+  openGraph: {
+    title: "SaveMy Reel Privacy Policy",
+    description: "Privacy policy and data handling for SaveMy Reel.",
+    url: `${config.SITE_URL}/privacy-policy`,
+    images: ["/file.svg"]
+  }
 };
 
 export default function PrivacyPolicyPage() {

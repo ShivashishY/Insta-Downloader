@@ -7,7 +7,6 @@
     "build": "next build",
     "vercel-build": "node scripts/install-ytdlp.js && next build",
     "postinstall": "node scripts/install-ytdlp.js",
-    "postbuild": "next-sitemap",
     "start": "next start",
     "lint": "eslint ."
   },
