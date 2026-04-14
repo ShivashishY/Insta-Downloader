@@ -1,45 +1,61 @@
+# *
 User-agent: *
 Allow: /
 
+# Googlebot
 User-agent: Googlebot
 Allow: /
 
+# Bingbot
 User-agent: Bingbot
 Allow: /
 
+# DuckDuckBot
 User-agent: DuckDuckBot
 Allow: /
 
+# GPTBot
 User-agent: GPTBot
 Allow: /
 
+# ChatGPT-User
 User-agent: ChatGPT-User
 Allow: /
 
+# Google-Extended
 User-agent: Google-Extended
 Allow: /
 
+# CCBot
 User-agent: CCBot
 Allow: /
 
+# ClaudeBot
 User-agent: ClaudeBot
 Allow: /
 
+# anthropic-ai
 User-agent: anthropic-ai
 Allow: /
 
+# PerplexityBot
 User-agent: PerplexityBot
 Allow: /
 
+# YouBot
 User-agent: YouBot
 Allow: /
 
+# Applebot
 User-agent: Applebot
 Allow: /
 
+# Bytespider
 User-agent: Bytespider
 Allow: /
 
-Host: savemyreel.xyz
+# Host
+Host: https://savemyreel.xyz
 
+# Sitemaps
 Sitemap: https://savemyreel.xyz/sitemap.xml

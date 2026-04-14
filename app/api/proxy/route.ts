@@ -2,12 +2,12 @@ import axios from "axios";
 import { execFile } from "node:child_process";
 import { promises as fs } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { join } from "node:path";
 import { promisify } from "node:util";
 import { Readable } from "node:stream";
 import { NextRequest, NextResponse } from "next/server";
+import ffmpegPath from "ffmpeg-static";
 import { config } from "@/lib/config";
-import { resolveFfmpegCommand, resolveYtDlpCommand } from "@/lib/binaries";
 
 export const runtime = "nodejs";
 
@@ -50,8 +50,7 @@ export async function GET(request: NextRequest) {
         "bestvideo+bestaudio/best",
         "--merge-output-format",
         "mp4",
-        "--ffmpeg-location",
-        dirname(resolveFfmpegCommand()),
+        ...(typeof ffmpegPath === "string" ? ["--ffmpeg-location", ffmpegPath] : []),
         "--no-playlist",
         "-o",
         outputPath,
@@ -59,7 +58,7 @@ export async function GET(request: NextRequest) {
         sourceUrl
       ];
 
-      await execFileAsync(resolveYtDlpCommand(), args, { maxBuffer: 10 * 1024 * 1024 });
+      await execFileAsync("yt-dlp", args, { maxBuffer: 10 * 1024 * 1024 });
 
       const data = await fs.readFile(outputPath);
       await fs.unlink(outputPath).catch(() => undefined);

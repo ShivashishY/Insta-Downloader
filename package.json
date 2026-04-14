@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/install-deps.js && next build",
-    "vercel-build": "node scripts/install-deps.js && next build",
+    "build": "next build",
+    "vercel-build": "next build",
+    "postinstall": "pip3 install yt-dlp || python3 -m pip install yt-dlp || true",
     "postbuild": "next-sitemap",
     "start": "next start",
     "lint": "eslint ."

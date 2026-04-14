@@ -1,7 +1,7 @@
 import axios from "axios";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
-import { resolveYtDlpCommand } from "@/lib/binaries";
+import ffmpegPath from "ffmpeg-static";
 import { config } from "@/lib/config";
 import { detectContentType } from "@/lib/detectPlatform";
 import { DownloadItem, DownloadResult, SupportedPlatform } from "@/lib/types";
@@ -446,7 +446,7 @@ function isAuthRestrictedError(message: string): boolean {
 }
 
 async function runYtDlpJson(url: string, extraArgs: string[] = []): Promise<YtDlpResponse> {
-  const ytDlpCommand = resolveYtDlpCommand();
+  const ffmpegBinary = typeof ffmpegPath === "string" ? ffmpegPath : "";
   const args = [
     "--dump-json",
     "--no-playlist",
@@ -454,12 +454,12 @@ async function runYtDlpJson(url: string, extraArgs: string[] = []): Promise<YtDl
     "bestvideo+bestaudio/best",
     "--merge-output-format",
     "mp4",
-    "--audio-multistreams",
+    ...(ffmpegBinary ? ["--ffmpeg-location", ffmpegBinary] : []),
     "--no-warnings",
     ...extraArgs,
     url
   ];
-  const { stdout } = await execFileAsync(ytDlpCommand, args, {
+  const { stdout } = await execFileAsync("yt-dlp", args, {
     maxBuffer: 20 * 1024 * 1024
   });
   return JSON.parse(stdout) as YtDlpResponse;
@@ -598,7 +598,7 @@ async function extractWithYtDlp(url: string, platform: SupportedPlatform): Promi
     }
 
     if (message.includes("ENOENT")) {
-      throw new Error("yt-dlp is not installed on the server. Ensure deploy-time installer runs or set YTDLP_BINARY_PATH.");
+      throw new Error("yt-dlp is not installed on the server.");
     }
     throw new Error("Unable to resolve media. The content may be private or temporarily unavailable.");
   }
@@ -673,63 +673,7 @@ async function extractWithRapidApi(url: string, platform: SupportedPlatform): Pr
   };
 }
 
-async function extractWithCobalt(url: string, platform: SupportedPlatform): Promise<DownloadResult> {
-  const cobaltUrl = config.COBALT_API_URL || "https://api.cobalt.tools";
-
-  const response = await fetch(`${cobaltUrl.replace(/\/$/, "")}/`, {
-    method: "POST",
-    headers: {
-      "content-type": "application/json",
-      accept: "application/json"
-    },
-    body: JSON.stringify({
-      url,
-      videoQuality: "1080",
-      filenameStyle: "pretty",
-      downloadMode: "auto"
-    })
-  });
-
-  const payload = await response.json() as Record<string, unknown>;
-  const status = typeof payload.status === "string" ? payload.status : "";
-  const mediaUrl = typeof payload.url === "string" ? payload.url : "";
-
-  if (!response.ok || status === "error") {
-    const errorObj = (payload.error && typeof payload.error === "object") ? payload.error as Record<string, unknown> : {};
-    const errorCode = typeof errorObj.code === "string" ? errorObj.code : "COBALT_FAILED";
-    throw new Error(errorCode);
-  }
-
-  if (!mediaUrl || (status !== "stream" && status !== "redirect" && status !== "tunnel" && status !== "picker")) {
-    throw new Error("COBALT_INVALID_RESPONSE");
-  }
-
-  const inferredType = detectContentType(url);
-
-  return {
-    success: true,
-    platform,
-    type: inferredType,
-    title: "SaveMy Reel Download",
-    author: "@unknown",
-    thumbnail: "",
-    items: [
-      {
-        quality: "HD",
-        size: "Unknown",
-        ext: "mp4",
-        url: mediaUrl,
-        fileName: "download.mp4"
-      }
-    ]
-  };
-}
-
 export async function extractMedia(url: string, platform: SupportedPlatform): Promise<DownloadResult> {
-  if (config.USE_COBALT) {
-    return extractWithCobalt(url, platform);
-  }
-
   if (config.USE_RAPID_API) {
     return extractWithRapidApi(url, platform);
   }
